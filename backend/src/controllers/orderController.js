@@ -110,17 +110,19 @@ exports.updateOrder = async (req, res) => {
   try {
     const orderId = req.params.order_id;
     const { prescriber_id, items, override_flag, override_reason } = req.body;
-  const medicationIds = items ? items.map(i => i.medication_id) : [];
+    const medicationIds = items && Array.isArray(items) ? items.map(i => i.medication_id) : [];
 
     const order = await Order.getById(orderId);
     if (!order) return res.status(404).json({ error: 'Order not found.' });
 
     const conflicts = await detectIngredientAllergyConflicts(order.patient_id, medicationIds);
-    const medSeverity = {};
+
+    // build medSeverity map similar to create
     const severityRank = { None: 0, Mild: 1, Moderate: 2, Severe: 3 };
+    const medSeverity = {};
     for (const c of conflicts) {
       const mid = c.medication_id;
-      if (!mid) continue;
+      if (mid === undefined || mid === null) continue;
       const prev = medSeverity[mid];
       const sev = c.severity || 'Mild';
       if (!prev || severityRank[sev] > severityRank[prev.severity]) {
@@ -140,7 +142,8 @@ exports.updateOrder = async (req, res) => {
       return res.status(400).json({ warning: 'Allergy conflict detected on update. Set override_flag with reason to proceed.', conflicts: summary });
     }
 
-    const annotatedItems = (items || []).map(it => {
+    // annotate items for storage
+    const annotatedItems = (items && Array.isArray(items) ? items : []).map(it => {
       const info = medSeverity[it.medication_id];
       return {
         ...it,
@@ -149,9 +152,14 @@ exports.updateOrder = async (req, res) => {
       };
     });
 
-    const updatedBy = req.user ? req.user.user_id : prescriber_id;
-    const affected = await Order.update(orderId, { prescriber_id, override_flag: !!override_flag, override_reason: override_reason || null }, annotatedItems || [], updatedBy);
+    if (!req.user || !req.user.user_id) {
+      return res.status(401).json({ error: 'Unauthorized: user information required for audit logging.' });
+    }
+    const updatedBy = req.user.user_id;
+
+    const affected = await Order.update(orderId, { prescriber_id, override_flag: !!override_flag, override_reason: override_reason || null }, annotatedItems, updatedBy);
     if (affected === 0) return res.status(404).json({ error: 'Order not found or no changes applied.' });
+
     res.json({ message: 'Order updated.' });
   } catch (err) {
     res.status(500).json({ error: err.message });

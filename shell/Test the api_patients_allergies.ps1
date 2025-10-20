@@ -40,7 +40,7 @@ Invoke-RestMethod -Uri "http://localhost:5000/api/patient-allergies/2" -Method P
 <#
 $updatePatientAllergy = @{
     severity = "Mild"
-    notes = "WIth correct notes presentable"
+    notes = "With correct notes presentable"
 } | ConvertTo-Json
 
 Invoke-RestMethod -Uri "http://localhost:5000/api/patient-allergies/2" -Method PUT -Headers $headers -Body $updatePatientAllergy -ContentType "application/json"

@@ -63,7 +63,7 @@ Invoke-RestMethod -Uri "http://localhost:5000/api/orders" -Method POST -Headers 
 $update = @{
   prescriber_id = 2
   override_flag = $true
-  override_reason = "HIgh outweighs risk"
+  override_reason = "High outweighs risk"
   items = @(
     @{ medication_id = 3; dosage='2 tablets'; frequency='daily'; duration='3 days' }
   )

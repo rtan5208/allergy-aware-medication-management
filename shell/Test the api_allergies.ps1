@@ -22,7 +22,7 @@ $headers = @{
 }
 
 # 5. Invoke
-# Get All Alleergies 
+# Get All Allergies 
 #Invoke-RestMethod -Uri "http://localhost:5000/api/allergies" -Method GET -Headers $headers
 
 

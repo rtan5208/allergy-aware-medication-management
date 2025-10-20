@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const patientAllergyController = require('../controllers/PatientAllergyController');
+const patientAllergyController = require('../controllers/patientAllergyController');
 const auth = require('../middleware/auth');
 
 router.get('/:patient_id', auth, patientAllergyController.listPatientAllergies);

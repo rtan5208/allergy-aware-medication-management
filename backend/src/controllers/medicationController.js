@@ -57,7 +57,7 @@ exports.deleteMedication = async (req, res) => {
       });
     }
 
-    await Medication.delete(req.params.id);
+    await Medication.delete(req.params.medication_id);
     res.json({ message: `Medication ${med.medication_name} deleted successfully.` });
   } catch (err) {
     res.status(500).json({ error: err.message });
