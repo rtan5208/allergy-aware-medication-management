@@ -62,7 +62,7 @@ exports.deleteAllergy = async (req, res) => {
     }
 
 
-    await Allergy.delete(req.params.id);
+    await Allergy.delete(req.params.allergy_id);
     res.json({
       message: `Allergy ${allergy.allergy_name} deleted successfully.`,
     });

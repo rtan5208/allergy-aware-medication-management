@@ -75,10 +75,13 @@ exports.createOrder = async (req, res) => {
       };
     });
 
-    const createdBy = req.user ? req.user.user_id : prescriber_id;
+  if (!req.user || !req.user.user_id) {
+    return res.status(401).json({ error: 'Unauthorized: user authentication required to create order.' });
+  }
+  const createdBy = req.user.user_id;
   const orderId = await Order.create({ patient_id, prescriber_id, override_flag: !!override_flag, override_reason: override_reason || null }, annotatedItems, createdBy);
 
-    return res.status(201).json({ order_id: orderId, override_applied: !!override_flag });
+  return res.status(201).json({ order_id: orderId, override_applied: !!override_flag });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
