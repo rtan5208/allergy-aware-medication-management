@@ -1,6 +1,18 @@
 This document compiles the API surface exposed by the backend and shows how to exercise each endpoint using the PowerShell scripts in this folder.
 
 Prerequisites
+- Install **Node.js v22.20.0 (LTS)**
+- Install **MySQL Community Edition 8.0**
+- Set up the database schema, including database name, tables, and initial data. Refer to the `sql` folder for all SQL scripts and data sets.
+- Refer to the `.env` file for database host, user, password, and database name configuration.
+- For a visual overview, see the ER diagram: `ER Diagram Allergy-Aware Medication Management System for Clinic XYZ.png`
+- Install **Express.js**
+- All dependencies are listed in `backend/package.json`
+- Just run `npm install` in the `backend` folder to install all dependencies needed.
+- Use **nodemon** to start running the server and listen for incoming requests. The default port is 5000.
+- Start the server with:
+  ```bash
+  npx nodemon src/app.js
 - Backend running at http://localhost:5000 — start [backend/src/app.js](../backend/src/app.js).
 - Env: set DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT, JWT_SECRET in [backend/.env](../backend/.env) as read by [backend/src/config/db.js](../backend/src/config/db.js).
 - Base URL: http://localhost:5000
